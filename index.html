@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+	<head>
+		<title>Suffolk County Bird Sightings</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.4/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://rawgit.com/novus/nvd3/v1.1.15-beta/nv.d3.min.css"/>
+		<link rel="stylesheet" type="text/css" href="/css/style.css" />
+		<script data-require="angular.js@1.2.x" src="https://code.angularjs.org/1.2.16/angular.js" data-semver="1.2.16"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script src="https://rawgit.com/mbostock/d3/master/d3.min.js"></script>
+		<script src="https://rawgit.com/novus/nvd3/v1.1.15-beta/nv.d3.min.js"></script>
+		<script src="https://rawgit.com/krispo/angular-nvd3/v0.1.1/dist/angular-nvd3.js"></script>
+		<script src="birdsightings.js"></script>
+	</head>
+	
+	<body ng-app="birdingChartsApp">
+
+		<div id="lynx">
+			<a class=lynx href="http://www.laurahughes.com/">main</a>
+		</div>
+	
+		<div id="name">Suffolk County Bird Sightings</div>
+		<div id="bodytext" ng-controller="MainCtrl" style="postion:relative;">
+
+			<strong>What is the problem or challenge?</strong> As an avid birder, I always want to know which of my local hotspots has been experiencing the most activity, so I can target my weekend field trips. However, this can be a time consuming task as it requires looking up each site individually on eBird.org.
+		
+			<p><strong>What does this app do?</strong> This chart uses Angular and d3 to hit the eBird.org API and generate a list of a Suffolk county birding hotspots, along with the number of distinct species sighted at that spot in the last 7 days. It then scrubs the list, removing any hotspots with no sightings. Finally, it charts the number of species sighted per hotspot, giving me a quick visual of the best spots to bird in my area. Clicking a bar displays a list of the species in a closable "popup" element.
+		
+			<p><strong>What are the limitations of this approach?</strong> Number of recent species sightings may not be a perfect match to quality of the site. Since this is data based on recent voluntary reports by birders, some spots with low counts may simply be unpopular. I've also presently limited my results geographically to Suffolk County, Massachusetts, because that is where I live, but generalization is a possible future upgrade.
+
+			<div class="status" ng-if="error">
+				{{ error }}
+			</div>
+  
+			<nvd3 options="options" data="numSightings" config="{refreshDataOnly: true}"></nvd3>
+			
+			<div ng-show='showSite != ""' class='panel panel-default' style='width:{{drilldownListWidth}}px;position:absolute;padding:0.5em;left:{{menux}}px;top:{{menuy}}px'>
+				<div style='padding:0.2em;margin-bottom:0.5em'>
+					<button class='button' style='float:right;z-index:1' ng-click="showSite=''">X</button>
+					<strong>Species found at {{ showSiteLabel}}</strong>
+				</div>
+				<ul class='list-group'>
+					<li class='list-group-item' ng-repeat='bird in detailedSightings[showSite]'>
+						{{ bird.comName }}
+					</li>
+				</ul>
+			</div>
+			
+			<div style="clear:both;"></div>
+
+		</div>
+		
+  	</body>
+
+</html>
